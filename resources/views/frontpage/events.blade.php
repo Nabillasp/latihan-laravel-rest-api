@@ -1,0 +1,17 @@
+
+<x-home-layout>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <h1 class="text-3xl font-bold text-gray-900">
+                        Events
+                    </h1>
+                    <p class="mt-4 text-gray-600">
+                        Informasi acara dan pertunjukan seni di Bali.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</x-home-layout>
