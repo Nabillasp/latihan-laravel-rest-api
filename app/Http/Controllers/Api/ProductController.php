@@ -38,7 +38,10 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->input('max_price'));
         }
 
-        $products = $query->orderBy('product_id')->paginate(10);
+        $perPage = $request->input('per_page', 10);
+        $perPage = max(1, min((int) $perPage, 100));
+
+        $products = $query->orderBy('product_id')->paginate($perPage);
 
         return ProductResource::collection($products);
     }
