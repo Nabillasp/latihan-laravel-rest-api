@@ -17,12 +17,12 @@ class ProductController extends Controller
     {
         $query = Product::with('category');
 
-        if ($request->filled('search')) {
-            $search = $request->input('search');
+        $keyword = $request->input('keyword', $request->input('search'));
 
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('name', 'like', "%{$keyword}%")
+                    ->orWhere('description', 'like', "%{$keyword}%");
             });
         }
 
@@ -38,10 +38,12 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->input('max_price'));
         }
 
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('limit', $request->input('per_page', 10));
         $perPage = max(1, min((int) $perPage, 100));
 
-        $products = $query->orderBy('product_id')->paginate($perPage);
+        $products = $query
+            ->orderBy('product_id')
+            ->paginate($perPage);
 
         return ProductResource::collection($products);
     }

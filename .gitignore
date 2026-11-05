@@ -13,3 +13,12 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+
+# File Tugas Kuliah / Praktikum Akademik (Dipisahkan dari repositori SHOPMATE)
+app/Http/Controllers/Api/NilaiController.php
+app/Models/Mahasiswa.php
+app/Models/Matakuliah.php
+app/Models/Nilai.php
+database/migrations/*_create_mahasiswa_table.php
+database/migrations/*_create_matakuliah_table.php
+database/migrations/*_create_nilai_table.php
