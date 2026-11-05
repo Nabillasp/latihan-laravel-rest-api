@@ -1,6 +1,6 @@
+
 FROM php:8.2-apache
 
-# Install dependencies sistem yang dibutuhkan Laravel
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
@@ -16,18 +16,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Konfigurasi Apache Document Root ke folder public/
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+ENV PORT=3000
+
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
     && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Aktifkan mod_rewrite Apache
 RUN a2enmod rewrite
 
-# Izinkan penimpaan konfigurasi oleh .htaccess di direktori public
 RUN echo '<Directory /var/www/html/public/>\n\
     Options Indexes FollowSymLinks\n\
     AllowOverride All\n\
@@ -37,13 +35,10 @@ RUN echo '<Directory /var/www/html/public/>\n\
 
 WORKDIR /var/www/html
 
-# Salin seluruh file project
 COPY . /var/www/html
 
-# Install dependencies composer (mode production)
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
 
-# Buat direktori storage framework dan pastikan permission www-data
 RUN mkdir -p /var/www/html/storage/framework/cache/data \
     && mkdir -p /var/www/html/storage/framework/sessions \
     && mkdir -p /var/www/html/storage/framework/views \
@@ -52,10 +47,9 @@ RUN mkdir -p /var/www/html/storage/framework/cache/data \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Salin script entrypoint startup
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-EXPOSE 80
+EXPOSE 3000
 
 CMD ["/usr/local/bin/docker-entrypoint.sh"]
